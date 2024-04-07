@@ -7,6 +7,8 @@
 extern BleKeyboard bleKeyboard;
 
 void initKeyboard();
-void lookForFool();
+void loopKeyboard();
+void attackSniff();
+void updateBattery();
 
 #endif

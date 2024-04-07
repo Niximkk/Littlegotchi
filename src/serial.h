@@ -6,6 +6,7 @@
 void initSerial();
 void log(String message);
 void alert(String message);
+void rem(String message);
 void broken(String message);
 
 #endif

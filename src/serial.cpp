@@ -21,6 +21,10 @@ void alert(String message){
     Serial.println("(#__#) - "+message);
 }
 
+void rem(String message){
+    Serial.println("( ◕‿◕) - "+message);
+}
+
 void broken(String message){
     Serial.println("(☓‿‿☓) - I BROKE!!!! because "+message);
 }

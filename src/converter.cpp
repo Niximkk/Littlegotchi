@@ -21,158 +21,90 @@ void initSdCard(){
             initSdCard();
             alert("Retrying to mount the SD card.");
         }
-    } else{
-        log("SD card mounted.");
-    }    
+    } else log("SD card mounted.");
     if (!SD.open(Path)){
         alert("Directory not found... Creating the directory.");
-        if (SD.mkdir(Path)) {
-            log("Directory created successfully!");
-        } else {
-            panic("Failed to create the directory.");
-            return;
-        }
+        if (SD.mkdir(Path)) log("Directory created successfully!");
+        else panic("Failed to create the directory."); return;
     } else{
-        log("Directory found.");
         if (!SD.open(FileName)){
             panic("Payload not found! Create a file called payload.txt @ /Littlegotchi");
             return;
-        }
+        } else log("Payload found!");
     }
 }
 
 void convert(){
     File payload = SD.open(FileName);
-
     while (payload.available()) {
         String line = payload.readStringUntil('\n');
+        String command = line.substring(0, line.indexOf(' '));
+        String argument = line.substring(line.indexOf(' ') + 1);
 
         /* Keystroke Injection */
-        if (line.startsWith("REM")){
-            continue;
-        } else if (line.startsWith("STRING")){
-            bleKeyboard.print(line.substring(7));
-        } else if (line.startsWith("STRINGLN")){
-            bleKeyboard.println(line.substring(9));
-        }
+        if (command=="REM") rem(argument);
+        else if (command=="STRING") bleKeyboard.print(argument);
+        else if (command=="STRINGLN") bleKeyboard.println(argument);
 
         /* System Keys*/
-        if (line.startsWith("ENTER")){
-            bleKeyboard.press(KEY_NUM_ENTER);
-        } else if (line.startsWith("ESCAPE")){
-            bleKeyboard.press(KEY_ESC);
-        } else if (line.startsWith("PRINTSCREEN")){
-            bleKeyboard.press(KEY_PRTSC);
-        } else if (line.startsWith("PAGEUP")){
-            bleKeyboard.press(KEY_PAGE_UP);
-        } else if (line.startsWith("PAGEDOWN")){
-            bleKeyboard.press(KEY_PAGE_DOWN);
-        } else if (line.startsWith("HOME")){
-            bleKeyboard.press(KEY_HOME);
-        } else if (line.startsWith("END")){
-            bleKeyboard.press(KEY_END);
-        } else if (line.startsWith("INSERT")){
-            bleKeyboard.press(KEY_INSERT);
-        } else if (line.startsWith("DELETE") || line.startsWith("DEL")){
-            bleKeyboard.press(KEY_DELETE);
-        } else if (line.startsWith("BACKSPACE")){
-            bleKeyboard.press(KEY_BACKSPACE);
-        } else if (line.startsWith("TAB")){
-            bleKeyboard.press(KEY_TAB);
-        }
+        if (command=="ENTER") bleKeyboard.press(KEY_NUM_ENTER);
+        else if (command=="ESCAPE") bleKeyboard.press(KEY_ESC);
+        else if (command=="PAUSE") bleKeyboard.press(0xD0);
+        else if (command=="PRINTSCREEN") bleKeyboard.press(KEY_PRTSC);
+        else if (command=="MENU") bleKeyboard.press(0xED);
 
         /* Cursor Keys */
-        if (line.startsWith("UP") || line.startsWith("UPARROW")){
-            bleKeyboard.press(KEY_UP_ARROW);
-        } else if (line.startsWith("DOWN") || line.startsWith("DOWNARROW")){
-            bleKeyboard.press(KEY_DOWN_ARROW);
-        } else if (line.startsWith("LEFT") || line.startsWith("LEFTARROW")){
-            bleKeyboard.press(KEY_LEFT_ARROW);
-        } else if (line.startsWith("RIGHT") || line.startsWith("RIGHTARROW")){
-            bleKeyboard.press(KEY_RIGHT_ARROW);
-        }
+        if (command=="UP" || command=="UPARROW") bleKeyboard.press(KEY_UP_ARROW);
+        else if (command=="DOWN" || command=="DOWNARROW") bleKeyboard.press(KEY_DOWN_ARROW);
+        else if (command=="LEFT" || command=="LEFTARROW") bleKeyboard.press(KEY_LEFT_ARROW);
+        else if (command=="RIGHT" || command=="RIGHTARROW") bleKeyboard.press(KEY_RIGHT_ARROW);
+        else if (command=="BACKSPACE") bleKeyboard.press(KEY_BACKSPACE);
+        else if (command=="PAGEUP") bleKeyboard.press(KEY_PAGE_UP);
+        else if (command=="PAGEDOWN") bleKeyboard.press(KEY_PAGE_DOWN);
+        else if (command=="DELETE" || command=="DEL") bleKeyboard.press(KEY_DELETE);
+        else if (command=="TAB") bleKeyboard.press(KEY_TAB);
+        else if (command=="INSERT") bleKeyboard.press(KEY_INSERT);
+        else if (command=="HOME") bleKeyboard.press(KEY_HOME);
+        else if (command=="END") bleKeyboard.press(KEY_END);
+        else if (command=="SPACE") bleKeyboard.print(" ");
 
         /* All the F's*/
-        if (line.startsWith("F1")){
-            bleKeyboard.press(KEY_F1);
-        } else if (line.startsWith("F2")){
-            bleKeyboard.press(KEY_F2);
-        } else if (line.startsWith("F3")){
-            bleKeyboard.press(KEY_F3);
-        } else if (line.startsWith("F4")){
-            bleKeyboard.press(KEY_F4);
-        } else if (line.startsWith("F5")){
-            bleKeyboard.press(KEY_F5);
-        } else if (line.startsWith("F6")){
-            bleKeyboard.press(KEY_F6);
-        } else if (line.startsWith("F7")){
-            bleKeyboard.press(KEY_F7);
-        } else if (line.startsWith("F8")){
-            bleKeyboard.press(KEY_F8);
-        } else if (line.startsWith("F9")){
-            bleKeyboard.press(KEY_F9);
-        } else if (line.startsWith("F10")){
-            bleKeyboard.press(KEY_F10);
-        } else if (line.startsWith("F11")){
-            bleKeyboard.press(KEY_F11);
-        } else if (line.startsWith("F12")){
-            bleKeyboard.press(KEY_F12);
-        }
-
+        if (command=="F1") bleKeyboard.press(KEY_F1);
+        else if (command=="F2") bleKeyboard.press(KEY_F2);
+        else if (command=="F3") bleKeyboard.press(KEY_F3);
+        else if (command=="F4") bleKeyboard.press(KEY_F4);
+        else if (command=="F5") bleKeyboard.press(KEY_F5);
+        else if (command=="F6") bleKeyboard.press(KEY_F6);
+        else if (command=="F7") bleKeyboard.press(KEY_F7);
+        else if (command=="F8") bleKeyboard.press(KEY_F8);
+        else if (command=="F9") bleKeyboard.press(KEY_F9);
+        else if (command=="F10") bleKeyboard.press(KEY_F10);
+        else if (command=="F11") bleKeyboard.press(KEY_F11);
+        else if (command=="F12") bleKeyboard.press(KEY_F12);
+        
         /* Modifier Keys */
-        if (line.startsWith("SHIFT")){
-            bleKeyboard.press(KEY_LEFT_SHIFT);
-        } else if (line.startsWith("ALT")){
-            bleKeyboard.press(KEY_LEFT_ALT);
-        } else if (line.startsWith("CONTROL") || line.startsWith("CTRL")){
-            bleKeyboard.press(KEY_LEFT_CTRL);
-        } else if (line.startsWith("COMMAND") || line.startsWith("WINDOWS") || line.startsWith("GUI")){
-            bleKeyboard.press(KEY_LEFT_GUI);
-        }
-
+        if (command=="SHIFT") bleKeyboard.press(KEY_LEFT_SHIFT);
+        else if (command=="ALT") bleKeyboard.press(KEY_LEFT_ALT);
+        else if (command=="CONTROL" || command=="CTRL") bleKeyboard.press(KEY_LEFT_CTRL);
+        else if (command=="COMMAND" || command=="WINDOWS" || command=="GUI") bleKeyboard.press(KEY_LEFT_GUI);
+        
         /* Lock Keys */
-        if (line.startsWith("CAPSLOCK")){
-            bleKeyboard.write(KEY_CAPS_LOCK);
-        }
+        if (command=="CAPSLOCK") bleKeyboard.write(KEY_CAPS_LOCK);
+        else if (command=="NUMLOCK") bleKeyboard.write(0xDB);
+        else if (command=="SCROLLOCK") bleKeyboard.write(0xCF);
 
-        /* Non supported */
-        if (line.startsWith("MENU APP")){
-            alert("The key: MENU APP is not suported!");
-        } else if (line.startsWith("PAUSE BREAK")){
-            alert("The key: PAUSE BREAK is not suported!");
-        } else if (line.startsWith("SPACE")){
-            alert("The key: SPACE is not suported!");
-        } else if (line.startsWith("NUMLOCK")){
-            alert("The key: NUMLOCK is not suported!");
-        } else if (line.startsWith("SCROLLOCK")){
-            alert("The key: SCROLLOCK is not suported!");
-        }
+        /* Delays */
+        if (command=="DELAY") delay(argument.toInt());
 
-        /* Delay */
-        if (line.startsWith("DELAY")){
-            delay(line.substring(6).toInt());
-        }
-
-        // All of the Littlegotchi things
-        if (line.startsWith("DISCONNECT")){
-            bleKeyboard.end();
-        } else if (line.startsWith("RELEASE")){
-            bleKeyboard.releaseAll();
-        } else if (line.startsWith("NEXTTRACK")){
-            bleKeyboard.write(KEY_MEDIA_NEXT_TRACK);
-        } else if (line.startsWith("PREVTRACK")){
-            bleKeyboard.write(KEY_MEDIA_PREVIOUS_TRACK);
-        } else if (line.startsWith("STOPTRACK")){
-            bleKeyboard.write(KEY_MEDIA_STOP);
-        } else if (line.startsWith("PAUSETRACK")){
-            bleKeyboard.write(KEY_MEDIA_PLAY_PAUSE);
-        } else if (line.startsWith("MUTE")){
-            bleKeyboard.write(KEY_MEDIA_MUTE);
-        } else if (line.startsWith("VOLUMEUP")){
-            bleKeyboard.write(KEY_MEDIA_VOLUME_UP);
-        } else if (line.startsWith("CALC")){
-            bleKeyboard.write(KEY_MEDIA_CALCULATOR);
-        }
+        /* All of the Littlegotchi things */
+        if (command=="DISCONNECT") bleKeyboard.end(); // Doesn't work.
+        else if (command=="RELEASE") bleKeyboard.releaseAll();
+        else if (command=="NEXTTRACK") bleKeyboard.write(KEY_MEDIA_NEXT_TRACK);
+        else if (command=="PREVTRACK") bleKeyboard.write(KEY_MEDIA_PREVIOUS_TRACK);
+        else if (command=="STOPTRACK") bleKeyboard.write(KEY_MEDIA_STOP);
+        else if (command=="PAUSETRACK") bleKeyboard.write(KEY_MEDIA_PLAY_PAUSE);
+        else if (command=="MUTE") bleKeyboard.write(KEY_MEDIA_MUTE);
+        else if (command=="VOLUMEUP") bleKeyboard.write(KEY_MEDIA_VOLUME_UP);
+        else if (command=="CALC") bleKeyboard.write(KEY_MEDIA_CALCULATOR);
     }
-
 }
