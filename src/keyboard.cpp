@@ -1,5 +1,8 @@
 #include "keyboard.h"
 #include "serial.h"
+#include "converter.h"
+
+BleKeyboard bleKeyboard;
 
 void initKeyboard(){
     bleKeyboard.setName("Littlegotchi!");
@@ -10,6 +13,6 @@ void initKeyboard(){
 void lookForFool(){
     if(bleKeyboard.isConnected()) {
         log("Fool found.");
+        convert();
     }
-
 }

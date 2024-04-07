@@ -14,4 +14,5 @@ void setup() {
 }
 void loop() {
   M5.update();
+  lookForFool();
 }

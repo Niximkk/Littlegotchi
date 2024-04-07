@@ -3,14 +3,17 @@
 #define SD_MOSI_PIN 26
 #define SD_CS_PIN 14
 #define Path "/Littlegotchi"
-#define FileName "/payload.txt"
+#define FileName "/Littlegotchi/payload.txt"
 
 #include "converter.h"
 #include "keyboard.h"
 #include "serial.h"
 #include "panic.h"
 
+SPIClass SPI2_SD;
+
 void initSdCard(){
+    SPI2_SD.begin(SD_CLK_PIN, SD_MISO_PIN, SD_MOSI_PIN, SD_CS_PIN);
     if (!SD.begin(SD_CS_PIN, SPI2_SD)){
         alert("Failed to mount SD card! Retrying in 5 seconds");
         unsigned timer = millis();
@@ -31,7 +34,7 @@ void initSdCard(){
         }
     } else{
         log("Directory found.");
-        if (!SD.open(Path FileName)){
+        if (!SD.open(FileName)){
             panic("Payload not found! Create a file called payload.txt @ /Littlegotchi");
             return;
         }
@@ -151,7 +154,9 @@ void convert(){
         }
 
         // All of the Littlegotchi things
-        if (line.startsWith("RELEASE")){
+        if (line.startsWith("DISCONNECT")){
+            bleKeyboard.end();
+        } else if (line.startsWith("RELEASE")){
             bleKeyboard.releaseAll();
         } else if (line.startsWith("NEXTTRACK")){
             bleKeyboard.write(KEY_MEDIA_NEXT_TRACK);
