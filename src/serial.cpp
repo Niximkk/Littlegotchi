@@ -13,21 +13,13 @@ void initSerial(){
     Serial.print(logo);
 }
 
-void log(String message){
-    Serial.println("(•‿‿•) - "+message);
-}
+void log(String message){ Serial.println("(•‿‿•) - "+message); }
 
-void alert(String message){
-    Serial.println("(#__#) - "+message);
-}
+void alert(String message){ Serial.println("(#__#) - "+message); }
 
-void rem(String message){
-    Serial.println("( ◕‿◕) - "+message);
-}
+void rem(String message){ Serial.println("( ◕‿◕) - "+message); }
 
-void broken(String message){
-    Serial.println("(☓‿‿☓) - I BROKE!!!! because "+message);
-}
+void broken(String message){ Serial.println("(☓‿‿☓) - I BROKE!!!! because "+message); }
 
 // Some ducks for decoration!
 //   __(.)< __(.)> __(.)=   

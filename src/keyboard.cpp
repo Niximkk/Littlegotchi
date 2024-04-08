@@ -3,6 +3,8 @@
 #include "serial.h"
 #include "converter.h"
 
+bool attacking = false;
+
 BleKeyboard bleKeyboard("Littlegotchi!", "ImNix");
 
 void initKeyboard(){
@@ -16,7 +18,7 @@ void loopKeyboard(){
 }
 
 void attackSniff(){
-    if(bleKeyboard.isConnected()) convert(); log("Fool found.");
+    if(bleKeyboard.isConnected()){ log("Sending payload."); convert(); log("Payload sent, repeating..."); }
 }
 
 void updateBattery(){

@@ -38,8 +38,12 @@ void convert(){
     File payload = SD.open(FileName);
     while (payload.available()) {
         String line = payload.readStringUntil('\n');
-        String command = line.substring(0, line.indexOf(' '));
-        String argument = line.substring(line.indexOf(' ') + 1);
+        String command;
+        String argument;
+        int separator = line.indexOf(' ');
+
+        if (separator == -1) { line.remove(line.length() - 1); command = line; argument = "1337"; }
+        else { command = line.substring(0, separator).c_str(); argument = line.substring(separator + 1).c_str(); }
 
         /* Keystroke Injection */
         if (command=="REM") rem(argument);
@@ -107,4 +111,5 @@ void convert(){
         else if (command=="VOLUMEUP") bleKeyboard.write(KEY_MEDIA_VOLUME_UP);
         else if (command=="CALC") bleKeyboard.write(KEY_MEDIA_CALCULATOR);
     }
+    payload.close();
 }

@@ -4,6 +4,8 @@
 #include <Arduino.h>
 #include <BleKeyboard.h>
 
+extern bool attacking;
+
 extern BleKeyboard bleKeyboard;
 
 void initKeyboard();
